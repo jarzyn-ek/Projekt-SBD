@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Controller\AppController;
@@ -19,10 +20,24 @@ class WorkersController extends AppController
      */
     public function index()
     {
-        // $this->paginate = [
-        //     'contain' => ['Staffs'],
-        // ];
-        $workers = $this->paginate($this->Workers);
+        $query = $this->Workers->find('all', [
+            'contain' => [
+                'Staffs'
+            ]
+        ]);
+        
+        if (!is_null($query_search = $this->request->getQuery('table_search')) && $query_search != '') {
+            $query = $query->where([
+                'OR' => [
+                    'Workers.first_name LIKE' => '%' . $query_search . '%',
+                    'Workers.last_name LIKE' => '%' . $query_search . '%',
+                    'Workers.pesel LIKE' => '%' . $query_search . '%',
+                    'Staffs.name LIKE' => '%' . $query_search . '%'
+                ]
+            ]);
+        }
+
+        $workers = $this->paginate($query);
 
         $this->set(compact('workers'));
     }

@@ -32,4 +32,9 @@ class Job extends Entity
         'department' => true,
         'workers' => true,
     ];
+
+    protected function _getIdName()
+    {
+        return $this->_properties['id'] . ': ' . $this->_properties['name'];
+    }
 }

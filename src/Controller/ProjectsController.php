@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Controller\AppController;
@@ -20,7 +21,15 @@ class ProjectsController extends AppController
      */
     public function index()
     {
-        $projects = $this->paginate($this->Projects);
+        $query = $this->Projects->find('all');
+
+        if (!is_null($query_search = $this->request->getQuery('table_search')) && $query_search != '') {
+            $query = $query->where([
+                'name LIKE' => '%' . $query_search . '%'
+            ]);
+        }
+
+        $projects = $this->paginate($query);
 
         $this->set(compact('projects'));
     }
@@ -108,15 +117,12 @@ class ProjectsController extends AppController
     public function delete($id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
-        // $project = $this->Projects->get($id);
 
         $project = $this->Projects->get($id, [
             'contain' => [
                 'Budgets'
             ]
         ]);
-
-        //dd($department);
 
         if ($project->budgets) {
             $this->Flash->error(__('The {0} could not be deleted. There are related {1} in database', 'Project', 'Budgets'));

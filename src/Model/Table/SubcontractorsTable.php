@@ -34,7 +34,7 @@ class SubcontractorsTable extends Table
         parent::initialize($config);
 
         $this->setTable('subcontractors');
-        $this->setDisplayField('name');
+        $this->setDisplayField('id_name');
         $this->setPrimaryKey('id');
 
         $this->hasMany('Contracts', [

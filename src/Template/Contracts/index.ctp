@@ -16,7 +16,7 @@
           <h3 class="box-title"><?php echo __('List'); ?></h3>
 
           <div class="box-tools">
-            <form action="<?php echo $this->Url->build(); ?>" method="POST">
+            <form action="<?php echo $this->Url->build(); ?>" method="GET">
               <div class="input-group input-group-sm" style="width: 150px;">
                 <input type="text" name="table_search" class="form-control pull-right" placeholder="<?php echo __('Search'); ?>">
 
@@ -48,8 +48,8 @@
                   <td><?= h($contract->type) ?></td>
                   <td><?= h($contract->start_date) ?></td>
                   <td><?= h($contract->end_date) ?></td>
-                  <td><?= $contract->has('worker') ? $this->Html->link($contract->worker->id, ['controller' => 'Workers', 'action' => 'view', $contract->worker->id]) : '' ?></td>
-                  <td><?= $contract->has('subcontractor') ? $this->Html->link($contract->subcontractor->name, ['controller' => 'Subcontractors', 'action' => 'view', $contract->subcontractor->id]) : '' ?></td>
+                  <td><?= $contract->has('worker') ? $this->Html->link($contract->worker->full_name, ['controller' => 'Workers', 'action' => 'view', $contract->worker->id]) : '' ?></td>
+                  <td><?= $contract->has('subcontractor') ? $this->Html->link($contract->subcontractor->id_name, ['controller' => 'Subcontractors', 'action' => 'view', $contract->subcontractor->id]) : '' ?></td>
                   <td class="actions text-right">
                       <?= $this->Html->link(__('View'), ['action' => 'view', $contract->id], ['class'=>'btn btn-info btn-xs']) ?>
                       <?= $this->Html->link(__('Edit'), ['action' => 'edit', $contract->id], ['class'=>'btn btn-warning btn-xs']) ?>

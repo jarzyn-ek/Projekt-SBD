@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Controller\AppController;
@@ -19,10 +20,23 @@ class BudgetsController extends AppController
      */
     public function index()
     {
-        // $this->paginate = [
-        //     'contain' => ['Projects', 'Departments'],
-        // ];
-        $budgets = $this->paginate($this->Budgets);
+        $query = $this->Budgets->find('all', [
+            'contain' => [
+                'Projects',
+                'Departments'
+            ]
+        ]);
+
+        if (!is_null($query_search = $this->request->getQuery('table_search')) && $query_search != '') {
+            $query = $query->where([
+                'OR' => [
+                    'Projects.name LIKE' => '%' . $query_search . '%',
+                    'Departments.name LIKE' => '%' . $query_search . '%'
+                ]
+            ]);
+        }
+        
+        $budgets = $this->paginate($query);
 
         $this->set(compact('budgets'));
     }
@@ -104,15 +118,12 @@ class BudgetsController extends AppController
     public function delete($id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
-        // $budget = $this->Budgets->get($id);
 
         $budget = $this->Budgets->get($id, [
             'contain' => [
                 'Settlements'
             ]
         ]);
-
-        //dd($department);
 
         if ($budget->settlements) {
             $this->Flash->error(__('The {0} could not be deleted. There are related {1} in database', 'Budget', 'Settlements'));

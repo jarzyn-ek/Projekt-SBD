@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Controller\AppController;
@@ -19,9 +20,10 @@ class SettlementsController extends AppController
      */
     public function index()
     {
-        // $this->paginate = [
-        //     'contain' => ['Contracts', 'Budgets'],
-        // ];
+        $this->paginate = [
+            'contain' => ['Contracts', 'Budgets'],
+        ];
+
         $settlements = $this->paginate($this->Settlements);
 
         $this->set(compact('settlements'));

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Controller\AppController;
@@ -19,7 +20,22 @@ class DepartmentsController extends AppController
      */
     public function index()
     {
-        $departments = $this->paginate($this->Departments);
+        $query = $this->Departments->find('all', [
+            'contain' => [
+                'Companies'
+            ]
+        ]);
+
+        if (!is_null($query_search = $this->request->getQuery('table_search')) && $query_search != '') {
+            $query = $query->where([
+                'OR' => [
+                    'Departments.name LIKE' => '%' . $query_search . '%',
+                    'Companies.name LIKE' => '%' . $query_search . '%'
+                ]
+            ]);
+        }
+
+        $departments = $this->paginate($query);
 
         $this->set(compact('departments'));
     }
@@ -101,11 +117,9 @@ class DepartmentsController extends AppController
         $this->request->allowMethod(['post', 'delete']);
         $department = $this->Departments->get($id, [
             'contain' => [
-                'Staffs','Jobs','Budgets'
+                'Staffs', 'Jobs', 'Budgets'
             ]
         ]);
-
-        //dd($department);
 
         if ($department->staffs) {
             $this->Flash->error(__('The {0} could not be deleted. There are related {1} in database', 'Department', 'Staffs'));
@@ -115,12 +129,12 @@ class DepartmentsController extends AppController
         if ($department->jobs) {
             $this->Flash->error(__('The {0} could not be deleted. There are related {1} in database', 'Department', 'Jobs'));
             return $this->redirect(['action' => 'index']);
-        }     
+        }
 
         if ($department->budgets) {
             $this->Flash->error(__('The {0} could not be deleted. There are related {1} in database', 'Department', 'Budgets'));
             return $this->redirect(['action' => 'index']);
-        }   
+        }
 
         if ($this->Departments->delete($department)) {
             $this->Flash->success(__('The {0} has been deleted.', 'Department'));

@@ -1,7 +1,9 @@
 <?php
+
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\I18n\Time;
 
 /**
  * Contracts Controller
@@ -19,10 +21,25 @@ class ContractsController extends AppController
      */
     public function index()
     {
-        // $this->paginate = [
-        //     'contain' => ['Workers', 'Subcontractors'],
-        // ];
-        $contracts = $this->paginate($this->Contracts);
+        $query = $this->Contracts->find('all', [
+            'contain' => [
+                'Workers',
+                'Subcontractors'
+            ]
+        ]);
+
+        if (!is_null($query_search = $this->request->getQuery('table_search')) && $query_search != '') {
+            $query = $query->where([
+                'OR' => [
+                    'Contracts.name LIKE' => '%' . $query_search . '%',
+                    'Workers.first_name LIKE' => '%' . $query_search . '%',
+                    'Workers.last_name LIKE' => '%' . $query_search . '%',
+                    'Subcotractors.name LIKE' => '%' . $query_search . '%'
+                ]
+            ]);
+        }
+
+        $contracts = $this->paginate($query);
 
         $this->set(compact('contracts'));
     }
@@ -53,7 +70,13 @@ class ContractsController extends AppController
     {
         $contract = $this->Contracts->newEntity();
         if ($this->request->is('post')) {
+            list($start_date, $end_date) = explode(" - ", $this->request->data('daterange'));
+
             $contract = $this->Contracts->patchEntity($contract, $this->request->getData());
+
+            $contract->start_date = new Time($start_date);
+            $contract->end_date = new Time($end_date);
+
             if ($this->Contracts->save($contract)) {
                 $this->Flash->success(__('The {0} has been saved.', 'Contract'));
 
@@ -80,7 +103,13 @@ class ContractsController extends AppController
             'contain' => []
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
+            list($start_date, $end_date) = explode(" - ", $this->request->data('daterange'));
+
             $contract = $this->Contracts->patchEntity($contract, $this->request->getData());
+
+            $contract->start_date = new Time($start_date);
+            $contract->end_date = new Time($end_date);
+
             if ($this->Contracts->save($contract)) {
                 $this->Flash->success(__('The {0} has been saved.', 'Contract'));
 

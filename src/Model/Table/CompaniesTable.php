@@ -33,7 +33,7 @@ class CompaniesTable extends Table
         parent::initialize($config);
 
         $this->setTable('companies');
-        $this->setDisplayField('name');
+        $this->setDisplayField('id_name');
         $this->setPrimaryKey('id');
 
         $this->hasMany('Departments', [

@@ -35,7 +35,7 @@ class ProjectsTable extends Table
         parent::initialize($config);
 
         $this->setTable('projects');
-        $this->setDisplayField('name');
+        $this->setDisplayField('id_name');
         $this->setPrimaryKey('id');
 
         $this->hasMany('Budgets', [

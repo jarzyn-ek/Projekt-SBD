@@ -34,4 +34,9 @@ class Department extends Entity
         'jobs' => true,
         'staffs' => true,
     ];
+
+    protected function _getIdName()
+    {
+        return $this->_properties['id'] . ': ' . $this->_properties['name'];
+    }
 }

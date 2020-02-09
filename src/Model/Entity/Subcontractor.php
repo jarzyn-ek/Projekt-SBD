@@ -30,4 +30,9 @@ class Subcontractor extends Entity
         'contracts' => true,
         'projects' => true,
     ];
+
+    protected function _getIdName()
+    {
+        return $this->_properties['id'] . ': ' . $this->_properties['name'];
+    }
 }

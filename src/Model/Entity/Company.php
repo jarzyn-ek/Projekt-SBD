@@ -26,4 +26,8 @@ class Company extends Entity
         'name' => true,
         'departments' => true,
     ];
+
+    protected function _getIdName() {
+        return $this->_properties['id'] . ': ' . $this->_properties['name'];
+    }
 }

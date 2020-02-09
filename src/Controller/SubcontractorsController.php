@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Controller\AppController;
@@ -19,7 +20,18 @@ class SubcontractorsController extends AppController
      */
     public function index()
     {
-        $subcontractors = $this->paginate($this->Subcontractors);
+        $query = $this->Subcontractors->find('all');
+
+        if (!is_null($query_search = $this->request->getQuery('table_search')) && $query_search != '') {
+            $query = $query->where([
+                'OR' => [
+                    'name LIKE' => '%' . $query_search . '%',
+                    'service_type LIKE' => '%' . $query_search . '%'
+                ]
+            ]);
+        }
+
+        $subcontractors = $this->paginate($query);
 
         $this->set(compact('subcontractors'));
     }

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Controller\AppController;
@@ -19,7 +20,15 @@ class CompaniesController extends AppController
      */
     public function index()
     {
-        $companies = $this->paginate($this->Companies);
+        $query = $this->Companies->find('all');
+        
+        if (!is_null($query_search = $this->request->getQuery('table_search')) && $query_search != '') {
+            $query = $query->where([
+                'name LIKE' => '%' . $query_search . '%'
+            ]);
+        }
+
+        $companies = $this->paginate($query);
 
         $this->set(compact('companies'));
     }

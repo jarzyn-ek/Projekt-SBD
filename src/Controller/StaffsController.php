@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controller;
 
 use App\Controller\AppController;
@@ -12,7 +13,8 @@ use App\Controller\AppController;
  */
 class StaffsController extends AppController
 {
-    public function initialize() {
+    public function initialize()
+    {
         parent::initialize();
 
         $this->loadModel('Departments');
@@ -25,10 +27,22 @@ class StaffsController extends AppController
      */
     public function index()
     {
-        // $this->paginate = [
-        //     'contain' => ['Departments'],
-        // ];
-        $staffs = $this->paginate($this->Staffs);
+        $query = $this->Staffs->find('all', [
+            'contain' => [
+                'Departments'
+            ]
+        ]);
+
+        if (!is_null($query_search = $this->request->getQuery('table_search')) && $query_search != '') {
+            $query = $query->where([
+                'OR' => [
+                    'Staffs.name LIKE' => '%' . $query_search . '%',
+                    'Departments.name LIKE' => '%' . $query_search . '%'
+                ]
+            ]);
+        }
+
+        $staffs = $this->paginate($query);
 
         $this->set(compact('staffs'));
     }
