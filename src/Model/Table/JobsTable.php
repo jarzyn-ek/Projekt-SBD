@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Model\Table;
 
 use Cake\ORM\Query;
@@ -68,6 +69,16 @@ class JobsTable extends Table
 
         $validator
             ->decimal('basic_salary')
+            ->add('basic_salary', 'minValue', [
+                'rule' => function ($value, $context) {
+                    if ($value < 0) {
+                        return false;
+                    }
+
+                    return true;
+                },
+                'message' => 'Value must be greater or equal 0'
+            ])
             ->requirePresence('basic_salary', 'create')
             ->notEmptyString('basic_salary');
 

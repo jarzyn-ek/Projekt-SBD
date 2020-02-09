@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Model\Table;
 
 use Cake\ORM\Query;
@@ -83,6 +84,16 @@ class ProjectsTable extends Table
 
         $validator
             ->decimal('expected_profit')
+            ->add('expected_profit', 'minValue', [
+                'rule' => function ($value, $context) {
+                    if ($value < 0) {
+                        return false;
+                    }
+
+                    return true;
+                },
+                'message' => 'Value must be greater or equal 0'
+            ])
             ->requirePresence('expected_profit', 'create')
             ->notEmptyString('expected_profit');
 

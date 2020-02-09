@@ -61,6 +61,16 @@ class SettlementsTable extends Table
 
         $validator
             ->decimal('charge')
+            ->add('charge', 'minValue', [
+                'rule' => function ($value, $context) {
+                    if ($value < 0) {
+                        return false;
+                    }
+
+                    return true;
+                },
+                'message' => 'Value must be greater or equal 0'
+            ])
             ->requirePresence('charge', 'create')
             ->notEmptyString('charge');
 

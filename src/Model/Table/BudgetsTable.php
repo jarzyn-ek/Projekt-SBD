@@ -65,11 +65,31 @@ class BudgetsTable extends Table
 
         $validator
             ->decimal('resources')
+            ->add('resources', 'minValue', [
+                'rule' => function ($value, $context) {
+                    if ($value < 0) {
+                        return false;
+                    }
+
+                    return true;
+                },
+                'message' => 'Value must be greater or equal 0'
+            ])
             ->requirePresence('resources', 'create')
             ->notEmptyString('resources');
 
         $validator
             ->decimal('expenses')
+            ->add('expenses', 'minValue', [
+                'rule' => function ($value, $context) {
+                    if ($value < 0) {
+                        return false;
+                    }
+
+                    return true;
+                },
+                'message' => 'Value must be greater or equal 0'
+            ])
             ->allowEmptyString('expenses');
 
         return $validator;

@@ -66,6 +66,16 @@ class StaffsTable extends Table
 
         $validator
             ->decimal('income')
+            ->add('income', 'minValue', [
+                'rule' => function ($value, $context) {
+                    if ($value < 0) {
+                        return false;
+                    }
+
+                    return true;
+                },
+                'message' => 'Value must be greater or equal 0'
+            ])
             ->requirePresence('income', 'create')
             ->notEmptyString('income');
 
